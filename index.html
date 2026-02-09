@@ -29,9 +29,7 @@
 <div class="result" id="result"></div>
 
 <script>
-// --- 太陽星座判定（簡易版） ---
-// 古い getSunSign 関数を削除
-// ↓これを貼る
+// --- 太陽星座判定（正確版） ---
 function getSunSign(month, day){
   if((month==3 && day>=21) || (month==4 && day<=19)) return '牡羊座';
   if((month==4 && day>=20) || (month==5 && day<=20)) return '牡牛座';
@@ -45,12 +43,6 @@ function getSunSign(month, day){
   if((month==12 && day>=22) || (month==1 && day<=19)) return '山羊座';
   if((month==1 && day>=20) || (month==2 && day<=18)) return '水瓶座';
   if((month==2 && day>=19) || (month==3 && day<=20)) return '魚座';
-}
-
-  for(let i=0;i<signs.length;i++){
-    if(month==signs[i][0] && day<signs[i][1]) return signs[i==0?11:i-1][2];
-  }
-  return signs[month-1][2];
 }
 
 // --- 月タイプ判定 ---
@@ -104,7 +96,7 @@ const moonStoneMap = {
   '夜タイプ':['水晶','スモーキークォーツ','グリーンアベンチュリン','シトリン','サンストーン']
 };
 
-// --- 太陽星座別天然石マッピング（例:太陽星座ごとに適当に割り当て） ---
+// --- 太陽星座別天然石マッピング ---
 const sunStoneMap = {
   '牡羊座':['アメジスト','ローズクォーツ'],
   '牡牛座':['オパール','オニキス'],
@@ -163,4 +155,3 @@ function calculate(){
 </script>
 </body>
 </html>
-# bracelet-diagnosis
