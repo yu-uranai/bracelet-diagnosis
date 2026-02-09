@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>天然石ブレスレット診断</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background: #fdf6f0; }
+  input, button { margin: 5px 0; padding: 5px; }
+  .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; background: #fff; }
+  .bracelet { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h2>天然石ブレスレット診断</h2>
+
+<label>名前: <input type="text" id="name"></label><br>
+<label>生年月日: 
+  <input type="number" id="year" placeholder="年" min="1900" max="2100">
+  <input type="number" id="month" placeholder="月" min="1" max="12">
+  <input type="number" id="day" placeholder="日" min="1" max="31">
+</label><br>
+<label>出生時間: 
+  <input type="number" id="hour" placeholder="時" min="0" max="23">
+  <input type="number" id="minute" placeholder="分" min="0" max="59">
+</label><br>
+<button onclick="calculate()">診断する</button>
+
+<div class="result" id="result"></div>
+
+<script>
+// --- 太陽星座判定（簡易版） ---
+function getSunSign(month, day){
+  const signs = [
+    [1,20,'山羊座'], [2,19,'水瓶座'], [3,21,'魚座'], [4,20,'牡羊座'],
+    [5,21,'牡牛座'], [6,21,'双子座'], [7,23,'蟹座'], [8,23,'獅子座'],
+    [9,23,'乙女座'], [10,23,'天秤座'], [11,23,'蠍座'], [12,22,'射手座'], [12,31,'山羊座']
+  ];
+  for(let i=0;i<signs.length;i++){
+    if(month==signs[i][0] && day<signs[i][1]) return signs[i==0?11:i-1][2];
+  }
+  return signs[month-1][2];
+}
+
+// --- 月タイプ判定 ---
+function getMoonType(hour){
+  if(hour>=0 && hour<6) return '朝タイプ';
+  if(hour>=6 && hour<12) return '昼タイプ';
+  if(hour>=12 && hour<18) return '夕方タイプ';
+  return '夜タイプ';
+}
+
+// --- 天然石とブレスレットリンク ---
+const bracelets = {
+  'アメジスト':[ {name:'アメジストブレスA', url:'https://uranaidoyu.base.ec/items/134551820'} ],
+  'オパール':[ 
+    {name:'オパールブレスA', url:'https://uranaidoyu.base.ec/items/134551820'},
+    {name:'オパールブレスB', url:'https://uranaidoyu.base.ec/items/134575914'}
+  ],
+  'ラピスラズリ':[ {name:'ラピスラズリブレスA', url:'https://uranaidoyu.base.ec/items/134551820'} ],
+  'ローズクォーツ':[ 
+    {name:'ローズクォーツブレスA', url:'https://uranaidoyu.base.ec/items/134552030'},
+    {name:'ローズクォーツブレスB', url:'https://uranaidoyu.base.ec/items/134577233'},
+    {name:'ローズクォーツブレスC', url:'https://uranaidoyu.base.ec/items/134579108'}
+  ],
+  'オニキス':[ 
+    {name:'オニキスブレスA', url:'https://uranaidoyu.base.ec/items/134552030'},
+    {name:'オニキスブレスB', url:'https://uranaidoyu.base.ec/items/134577829'}
+  ],
+  'ブルータイガーアイ':[ {name:'ブルータイガーアイブレスA', url:'https://uranaidoyu.base.ec/items/134553132'} ],
+  'アクアマリン':[ {name:'アクアマリンブレスA', url:'https://uranaidoyu.base.ec/items/134553132'} ],
+  'アマゾナイト':[ 
+    {name:'アマゾナイトブレスA', url:'https://uranaidoyu.base.ec/items/134553132'},
+    {name:'アマゾナイトブレスB', url:'https://uranaidoyu.base.ec/items/134577233'}
+  ],
+  'ジェイド':[ {name:'ジェイドブレスA', url:'https://uranaidoyu.base.ec/items/134575914'} ],
+  '水晶':[ 
+    {name:'水晶ブレスA', url:'https://uranaidoyu.base.ec/items/134575914'},
+    {name:'水晶ブレスB', url:'https://uranaidoyu.base.ec/items/134577233'},
+    {name:'水晶ブレスC', url:'https://uranaidoyu.base.ec/items/134577829'}
+  ],
+  'スモーキークォーツ':[ {name:'スモーキークォーツブレスA', url:'https://uranaidoyu.base.ec/items/134577829'} ],
+  'グリーンアベンチュリン':[ {name:'グリーンアベンチュリンブレスA', url:'https://uranaidoyu.base.ec/items/134578745'} ],
+  'シトリン':[ {name:'シトリンブレスA', url:'https://uranaidoyu.base.ec/items/134578745'} ],
+  'サンストーン':[ {name:'サンストーンブレスA', url:'https://uranaidoyu.base.ec/items/134579108'} ]
+};
+
+// --- 月タイプ別天然石マッピング ---
+const moonStoneMap = {
+  '朝タイプ':['アメジスト','オパール','ラピスラズリ'],
+  '昼タイプ':['ローズクォーツ','オニキス','ブルータイガーアイ'],
+  '夕方タイプ':['アクアマリン','アマゾナイト','ジェイド'],
+  '夜タイプ':['水晶','スモーキークォーツ','グリーンアベンチュリン','シトリン','サンストーン']
+};
+
+// --- 太陽星座別天然石マッピング（例:太陽星座ごとに適当に割り当て） ---
+const sunStoneMap = {
+  '牡羊座':['アメジスト','ローズクォーツ'],
+  '牡牛座':['オパール','オニキス'],
+  '双子座':['ラピスラズリ','ブルータイガーアイ'],
+  '蟹座':['アクアマリン','アマゾナイト'],
+  '獅子座':['ジェイド','水晶'],
+  '乙女座':['スモーキークォーツ','グリーンアベンチュリン'],
+  '天秤座':['シトリン','サンストーン'],
+  '蠍座':['アメジスト','ローズクォーツ'],
+  '射手座':['オパール','オニキス'],
+  '山羊座':['ラピスラズリ','ブルータイガーアイ'],
+  '水瓶座':['アクアマリン','アマゾナイト'],
+  '魚座':['ジェイド','水晶']
+};
+
+// --- 計算 ---
+function calculate(){
+  const name = document.getElementById('name').value;
+  const year = parseInt(document.getElementById('year').value);
+  const month = parseInt(document.getElementById('month').value);
+  const day = parseInt(document.getElementById('day').value);
+  const hour = parseInt(document.getElementById('hour').value);
+
+  if(!name || !year || !month || !day || isNaN(hour)){
+    alert('すべての項目を入力してください');
+    return;
+  }
+
+  const sun = getSunSign(month, day);
+  const moonType = getMoonType(hour);
+  const moonStones = moonStoneMap[moonType];
+  const sunStones = sunStoneMap[sun];
+
+  let html = `<h3>${name}さんの結果</h3>`;
+  html += `<p>太陽星座: ${sun}</p>`;
+  html += `<p>月タイプ: ${moonType}</p>`;
+
+  html += `<h4>太陽星座におすすめの天然石とブレスレット</h4><ul>`;
+  sunStones.forEach(s=>{
+    bracelets[s].forEach(b=>{
+      html += `<li class="bracelet">${b.name} - <a href="${b.url}" target="_blank">購入</a></li>`;
+    });
+  });
+  html += `</ul>`;
+
+  html += `<h4>月タイプにおすすめの天然石とブレスレット</h4><ul>`;
+  moonStones.forEach(s=>{
+    bracelets[s].forEach(b=>{
+      html += `<li class="bracelet">${b.name} - <a href="${b.url}" target="_blank">購入</a></li>`;
+    });
+  });
+  html += `</ul>`;
+
+  document.getElementById('result').innerHTML = html;
+}
+</script>
+</body>
+</html>
+# bracelet-diagnosis
