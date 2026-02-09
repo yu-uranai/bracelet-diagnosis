@@ -30,12 +30,23 @@
 
 <script>
 // --- 太陽星座判定（簡易版） ---
+// 古い getSunSign 関数を削除
+// ↓これを貼る
 function getSunSign(month, day){
-  const signs = [
-    [1,20,'山羊座'], [2,19,'水瓶座'], [3,21,'魚座'], [4,20,'牡羊座'],
-    [5,21,'牡牛座'], [6,21,'双子座'], [7,23,'蟹座'], [8,23,'獅子座'],
-    [9,23,'乙女座'], [10,23,'天秤座'], [11,23,'蠍座'], [12,22,'射手座'], [12,31,'山羊座']
-  ];
+  if((month==3 && day>=21) || (month==4 && day<=19)) return '牡羊座';
+  if((month==4 && day>=20) || (month==5 && day<=20)) return '牡牛座';
+  if((month==5 && day>=21) || (month==6 && day<=20)) return '双子座';
+  if((month==6 && day>=21) || (month==7 && day<=22)) return '蟹座';
+  if((month==7 && day>=23) || (month==8 && day<=22)) return '獅子座';
+  if((month==8 && day>=23) || (month==9 && day<=22)) return '乙女座';
+  if((month==9 && day>=23) || (month==10 && day<=22)) return '天秤座';
+  if((month==10 && day>=23) || (month==11 && day<=21)) return '蠍座';
+  if((month==11 && day>=22) || (month==12 && day<=21)) return '射手座';
+  if((month==12 && day>=22) || (month==1 && day<=19)) return '山羊座';
+  if((month==1 && day>=20) || (month==2 && day<=18)) return '水瓶座';
+  if((month==2 && day>=19) || (month==3 && day<=20)) return '魚座';
+}
+
   for(let i=0;i<signs.length;i++){
     if(month==signs[i][0] && day<signs[i][1]) return signs[i==0?11:i-1][2];
   }
